@@ -1,7 +1,6 @@
 package controle;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -9,9 +8,11 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import modelo.Chromosome;
@@ -21,8 +22,9 @@ public class ControladorPanelRelatorio implements ActionListener {
 
 	PanelRelatorio panelRelatorio;
 	
-	public ControladorPanelRelatorio(PanelRelatorio panelRelatorio) {
+	public ControladorPanelRelatorio(PanelRelatorio panelRelatorio, int ploidy) {
 		this.panelRelatorio = panelRelatorio;
+		if(ploidy == 1) panelRelatorio.getListOpcoesDeVisualizacao().setVisible(false);
 		addEventos();
 	}
 	
@@ -39,6 +41,19 @@ public class ControladorPanelRelatorio implements ActionListener {
 	        	panelRelatorio.repaint();
 	        }
 	    });
+		
+		panelRelatorio.getListOpcoesDeOrdenacao().addListSelectionListener(e -> {
+	        if (!e.getValueIsAdjusting()) { // Evita chamadas duplas
+	        	if(panelRelatorio.getListOpcoesDeOrdenacao().getSelectedIndex() == 0) {
+	        		panelRelatorio.setHomologousSet(new ArrayList<ArrayList<Chromosome>>(panelRelatorio.getCopyHomologousSet()));
+	        	} else if(panelRelatorio.getListOpcoesDeOrdenacao().getSelectedIndex() == 1) {
+	        		sortChromosomesByLengthIncreasing(panelRelatorio.getHomologousSet());
+	        	} else {
+	        		sortChromosomesByLengthDescending(panelRelatorio.getHomologousSet());
+	        	}
+	        	panelRelatorio.repaint();
+	        }
+	    });
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -50,6 +65,7 @@ public class ControladorPanelRelatorio implements ActionListener {
 	private void exportPDF() {
 	    panelRelatorio.getButtonExportarPDF().setVisible(false);
 	    panelRelatorio.getListOpcoesDeVisualizacao().setVisible(false);
+	    panelRelatorio.getListOpcoesDeOrdenacao().setVisible(false);
 	    try {
 	        double scaleFactor = 4.0;
 
@@ -79,6 +95,27 @@ public class ControladorPanelRelatorio implements ActionListener {
 	    } catch (IOException e) {
 	        JOptionPane.showMessageDialog(null, "Erro ao exportar ou imprimir: " + e.getMessage());
 	        e.printStackTrace(); 
-	    }
+	    }   
 	}
+	
+	public static void sortChromosomesByLengthDescending(ArrayList<ArrayList<Chromosome>> chromosomes) {
+        Collections.sort(chromosomes, new Comparator<ArrayList<Chromosome>>() {
+            @Override
+            public int compare(ArrayList set1, ArrayList set2) {
+            	double length1 = ((Chromosome) set1.get(0)).getTotalLength();
+                double length2 = ((Chromosome) set2.get(0)).getTotalLength();
+                return Double.compare(length2, length1);
+            }
+        });
+    }
+	public static void sortChromosomesByLengthIncreasing(ArrayList<ArrayList<Chromosome>> chromosomes) {
+        Collections.sort(chromosomes, new Comparator<ArrayList<Chromosome>>() {
+            @Override
+            public int compare(ArrayList set1, ArrayList set2) {
+            	double length1 = ((Chromosome) set1.get(0)).getTotalLength();
+                double length2 = ((Chromosome) set2.get(0)).getTotalLength();
+                return Double.compare(length1, length2);
+            }
+        });
+    }
 }

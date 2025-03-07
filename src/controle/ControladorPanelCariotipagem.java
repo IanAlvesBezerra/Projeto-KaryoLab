@@ -534,7 +534,7 @@ public class ControladorPanelCariotipagem implements ActionListener {
 	private void generateReport(){
 		PanelRelatorio panelRelatorio = new PanelRelatorio(Chromosome.findHomologousSets(panelCariotipagem.getPanelViewFotograma().getArrayChromosomes(), ploidy), speciesName);
 		Dialog dialog = new Dialog(frame, panelRelatorio);
-		new ControladorPanelRelatorio(panelRelatorio);
+		new ControladorPanelRelatorio(panelRelatorio, ploidy);
 		dialog.setVisible(true);
 	}
 	
@@ -611,6 +611,7 @@ public class ControladorPanelCariotipagem implements ActionListener {
 	        
 	        } else {
 	            JOptionPane.showMessageDialog(panelCariotipagem, "Erro! Arquivo inválido", "Erro!", JOptionPane.WARNING_MESSAGE);
+	            newKaryotype(false);
 	        }
 		
 		} catch (HeadlessException e) {

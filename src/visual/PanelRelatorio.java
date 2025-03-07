@@ -12,33 +12,47 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 import javax.swing.JList;
-import javax.swing.AbstractListModel;
 import javax.swing.ImageIcon;
 
 public class PanelRelatorio extends JPanel {
 	
 	ArrayList<ArrayList<Chromosome>> homologousSet;
+	ArrayList<ArrayList<Chromosome>> copyHomologousSet;
 	double proprotion;
 	
 	public String speciesName;
 	private JLabel labelEspecie;
 	private JButton buttonExportarPDF;
 	private JList<String> listOpcoesDeVisualizacao;
+	private JList <String> listOpcoesDeOrdenacao;
 	private boolean isViewingInSets = true;
 	
 	public PanelRelatorio(ArrayList<ArrayList<Chromosome>> homologousSet, String speciesName) {
 		setSize(874, 614);
 		setLayout(null);
 		this.homologousSet = homologousSet;
+		copyHomologousSet = new ArrayList<ArrayList<Chromosome>>(homologousSet);
 		this.proprotion = calculateHeightPorportion();
 		this.speciesName = speciesName;
 		add(getLabelEspecie());
 		add(getButtonExportarPDF());
 		add(getListOpcoesDeVisualizacao());
+		add(getListOpcoesDeOrdenacao());
 	}
 	
+	public ArrayList<ArrayList<Chromosome>> getHomologousSet() {
+		return homologousSet;
+	}
+
+	public void setHomologousSet(ArrayList<ArrayList<Chromosome>> homologousSet) {
+		this.homologousSet = homologousSet;
+	}
+
+	public ArrayList<ArrayList<Chromosome>> getCopyHomologousSet() {
+		return copyHomologousSet;
+	}
+
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
@@ -138,9 +152,19 @@ public class PanelRelatorio extends JPanel {
 			listOpcoesDeVisualizacao = new JList<String>(options);
 			listOpcoesDeVisualizacao.setFont(new Font("Montserrat", Font.PLAIN, 15));
 			listOpcoesDeVisualizacao.setSelectedIndex(0);
-			listOpcoesDeVisualizacao.setBounds(508, 520, 153, 43);
+			listOpcoesDeVisualizacao.setBounds(343, 520, 153, 43);
 		}
 		return listOpcoesDeVisualizacao;
+	}
+	public JList<String> getListOpcoesDeOrdenacao() {
+		if (listOpcoesDeOrdenacao == null) {
+			String[] options = {"Ordem de Marcação", "Crescente", "Decrescente"};
+			listOpcoesDeOrdenacao = new JList<String>(options);
+			listOpcoesDeOrdenacao.setFont(new Font("Montserrat", Font.PLAIN, 15));
+			listOpcoesDeOrdenacao.setSelectedIndex(0);
+			listOpcoesDeOrdenacao.setBounds(506, 500, 155, 63);
+		}
+		return listOpcoesDeOrdenacao;
 	}
 
 	public boolean isViewingInSets() {
@@ -150,6 +174,4 @@ public class PanelRelatorio extends JPanel {
 	public void setViewingInSets(boolean isViewingInSets) {
 		this.isViewingInSets = isViewingInSets;
 	}
-	
-	
 }

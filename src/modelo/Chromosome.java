@@ -101,23 +101,10 @@ public class Chromosome {
                 currentSet.clear(); // Inicia um novo conjunto
             }
         }
-        
-		//sortChromosomesByLengthDescending(homologousSets);
 		
 		separateSexualChromosomes(homologousSets);
 
         return homologousSets;
-    }
-	
-	public static void sortChromosomesByLengthDescending(ArrayList<ArrayList<Chromosome>> chromosomes) {
-        Collections.sort(chromosomes, new Comparator<ArrayList<Chromosome>>() {
-            @Override
-            public int compare(ArrayList set1, ArrayList set2) {
-            	double length1 = ((Chromosome) set1.get(0)).getTotalLength();
-                double length2 = ((Chromosome) set2.get(0)).getTotalLength();
-                return Double.compare(length2, length1);
-            }
-        });
     }
 	
 	private static void separateSexualChromosomes(ArrayList<ArrayList<Chromosome>> homologousSets) {

@@ -7,18 +7,11 @@ import modelo.Chromosome;
 
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.util.ArrayList;
 
-import javax.swing.JLabel;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.JList;
 import javax.swing.JToolBar;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.ImageIcon;
 
 public class PanelCariotipagem extends JPanel {

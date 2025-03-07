@@ -40,7 +40,7 @@ public class PanelViewFotograma extends JPanel {
     
     public JLabel getLabelFotograma() {
         if (labelFotograma == null) {
-            labelFotograma = new JLabel("Visualização fotograma");
+            labelFotograma = new JLabel();
             labelFotograma.setBounds(10, 11, 636, 634);
         }
         return labelFotograma;
