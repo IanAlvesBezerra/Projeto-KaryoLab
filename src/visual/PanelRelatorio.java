@@ -33,7 +33,6 @@ public class PanelRelatorio extends JPanel {
 		setLayout(null);
 		this.homologousSet = homologousSet;
 		copyHomologousSet = new ArrayList<ArrayList<Chromosome>>(homologousSet);
-		this.proprotion = calculateHeightPorportion();
 		this.speciesName = speciesName;
 		add(getLabelEspecie());
 		add(getButtonExportarPDF());
@@ -54,80 +53,106 @@ public class PanelRelatorio extends JPanel {
 	}
 
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		
-		int xPosition = 32;
-		int yPosition = 100;
-		
-		for(ArrayList<Chromosome> set : homologousSet) {
-			if(isViewingInSets) {
-				for(Chromosome c : set) {
-					g.setColor(Color.BLACK);
-					int shorterHight = calculateArmHight(c.getShorterArmLength());
-					int longerHight = calculateArmHight(c.getLongerArmLength());
-					g.fillRect(xPosition, yPosition, 10,  shorterHight);
-					g.fillOval(xPosition, (yPosition+shorterHight+1), 10, 10);
-					g.fillRect(xPosition, (yPosition+12+shorterHight), 10,  longerHight);
-					
-					for (Band band : c.getBandsShorterArm()) {
-					    g.setColor(band.getColor());
-
-					    int bandY = (int) (yPosition + c.calculateDistanceToBand(band, 2));
-
-					    g.fillRect(xPosition, bandY, 10, (int) band.calculateBendLength());
-					}
-
-					for (Band band : c.getBandsLongerArm()) {
-					    g.setColor(band.getColor());
-
-					    int bandY = (int) (yPosition + shorterHight + 12 + c.calculateDistanceToBand(band, 1));
-
-					    g.fillRect(xPosition, bandY, 10, (int) band.calculateBendLength());
-					}
-		            
-					xPosition += 15;
-				}
-			}
-			//visualizar pela média dos conjuntos
-			else {
-				g.setColor(Color.BLACK);
-				int averageShorterArm = 0;
-				int averageLongerArm = 0;
-				for(Chromosome c : set) {
-					averageShorterArm += c.getShorterArmLength();
-					averageLongerArm += c.getLongerArmLength();
-				}
-				averageShorterArm /= set.size();
-				averageLongerArm /= set.size();
-				
-				g.fillRect(xPosition, yPosition, 10,  averageShorterArm);
-				g.fillOval(xPosition, (yPosition+averageShorterArm+1), 10, 10);
-				g.fillRect(xPosition, (yPosition+12+averageShorterArm), 10,  averageLongerArm);
-				
-				xPosition += 15;
-			}
-			xPosition += 15;
-			// Se houverem muitos cromossomos, de forma que cheguem até o final da tela
-			if(xPosition >= 827) { // Volta a posição x para o começo e desce a posição y
-				xPosition = 32; 
-				yPosition += 110;
-			}
-		}
-		
+	    super.paintComponent(g);
+	    
+	    proprotion = calculateHeightPorportion();
+	    
+	    int xPosition = 32;
+	    int yPosition = 125;
+	    Integer referenceCentromereY = null;
+	    
+	    for (ArrayList<Chromosome> set : homologousSet) {
+	        if (isViewingInSets) {
+	            for (Chromosome c : set) {
+	                g.setColor(Color.BLACK);
+	                int shorterHight = calculateArmHight(c.getShorterArmLength());
+	                int longerHight = calculateArmHight(c.getLongerArmLength());
+	                
+	                int centromereY = yPosition + shorterHight + 1;
+	                
+	                if (referenceCentromereY == null) {
+	                    referenceCentromereY = centromereY; 
+	                }
+	                
+	                int adjustedYPosition = referenceCentromereY - shorterHight - 1;
+	                
+	                g.fillRect(xPosition, adjustedYPosition, 10, shorterHight);
+	                g.fillOval(xPosition, referenceCentromereY, 10, 10);
+	                g.fillRect(xPosition, referenceCentromereY + 11, 10, longerHight);
+	                
+	                for (Band band : c.getBandsShorterArm()) {
+	                    g.setColor(band.getColor());
+	                    int bandY = (int) (adjustedYPosition + c.calculateDistanceToBand(band, 2));
+	                    g.fillRect(xPosition, bandY, 10, (int) band.calculateBendLength());
+	                }
+	                
+	                for (Band band : c.getBandsLongerArm()) {
+	                    g.setColor(band.getColor());
+	                    int bandY = (int) (referenceCentromereY + 11 + c.calculateDistanceToBand(band, 1));
+	                    g.fillRect(xPosition, bandY, 10, (int) band.calculateBendLength());
+	                }
+	                
+	                xPosition += 15;
+	            }
+	        } else {
+	            g.setColor(Color.BLACK);
+	            int averageShorterArm = 0;
+	            int averageLongerArm = 0;
+	            for (Chromosome c : set) {
+	                averageShorterArm += calculateArmHight(c.getShorterArmLength());
+	                averageLongerArm += calculateArmHight(c.getLongerArmLength());
+	            }
+	            
+	            averageShorterArm /= set.size();
+	            averageLongerArm /= set.size();
+	            
+	            int centromereY = yPosition + averageShorterArm + 1;
+	            
+	            if (referenceCentromereY == null) {
+	                referenceCentromereY = centromereY;
+	            }
+	            
+	            int adjustedYPosition = referenceCentromereY - averageShorterArm - 1;
+	            
+	            g.fillRect(xPosition, adjustedYPosition, 10, averageShorterArm);
+	            g.fillOval(xPosition, referenceCentromereY, 10, 10);
+	            g.fillRect(xPosition, referenceCentromereY + 11, 10, averageLongerArm);
+	            
+	            xPosition += 15;
+	        }
+	        
+	        xPosition += 15;
+	        if (xPosition >= 827) {
+	            xPosition = 32;
+	            yPosition += 110;
+	        }
+	    }
 	}
+
 	
 	private double calculateHeightPorportion() {
 	    if (homologousSet.isEmpty() || homologousSet.getFirst().isEmpty()) {
 	        return 1; // Valor padrão para evitar divisão por zero
 	    }
-
-	    Chromosome reference = homologousSet.getFirst().getFirst();
-	    return 100 / reference.getTotalLength();
+	    
+	    if(isViewingInSets) {
+	    	Chromosome reference = homologousSet.getFirst().getFirst();
+	    	return 100 / reference.getTotalLength();	    	
+	    }
+	    else {
+	    	double averageSize = 0;
+	    	for(Chromosome c : homologousSet.getFirst()) {
+	    		averageSize += c.getTotalLength();
+	    	}
+	    	averageSize /= homologousSet.getFirst().size();
+	    	return 100 / averageSize;
+	    }
 	}
 	
 	private int calculateArmHight(double armLength) {
 		return (int)(armLength*proprotion);
 	}
+	
 	public JLabel getLabelEspecie() {
 		if (labelEspecie == null) {
 			labelEspecie = new JLabel("New label");

@@ -101,6 +101,9 @@ public class Chromosome {
                 currentSet.clear(); // Inicia um novo conjunto
             }
         }
+        if(!currentSet.isEmpty()) {
+        	homologousSets.add(new ArrayList<>(currentSet));        	
+        }
 		
 		separateSexualChromosomes(homologousSets);
 

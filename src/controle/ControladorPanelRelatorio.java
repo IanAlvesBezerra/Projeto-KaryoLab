@@ -102,8 +102,23 @@ public class ControladorPanelRelatorio implements ActionListener {
         Collections.sort(chromosomes, new Comparator<ArrayList<Chromosome>>() {
             @Override
             public int compare(ArrayList set1, ArrayList set2) {
-            	double length1 = ((Chromosome) set1.get(0)).getTotalLength();
-                double length2 = ((Chromosome) set2.get(0)).getTotalLength();
+            	int counter = 0;
+            	
+            	double length1 = 0;
+            	for(int i = 0; i < set1.size(); i++) {
+            		length1 += ((Chromosome) set1.get(i)).getTotalLength();
+            		counter++;
+            	}
+            	length1 /= counter;
+            	
+            	counter = 0;
+            	double length2 = 0;
+            	for(int i = 0; i < set2.size(); i++) {
+            		length1 += ((Chromosome) set2.get(i)).getTotalLength();
+            		counter++;
+            	}
+            	length2 /= counter;
+            	
                 return Double.compare(length2, length1);
             }
         });
@@ -112,8 +127,23 @@ public class ControladorPanelRelatorio implements ActionListener {
         Collections.sort(chromosomes, new Comparator<ArrayList<Chromosome>>() {
             @Override
             public int compare(ArrayList set1, ArrayList set2) {
-            	double length1 = ((Chromosome) set1.get(0)).getTotalLength();
-                double length2 = ((Chromosome) set2.get(0)).getTotalLength();
+int counter = 0;
+            	
+            	double length1 = 0;
+            	for(int i = 0; i < set1.size(); i++) {
+            		length1 += ((Chromosome) set1.get(i)).getTotalLength();
+            		counter++;
+            	}
+            	length1 /= counter;
+            	
+            	counter = 0;
+            	double length2 = 0;
+            	for(int i = 0; i < set2.size(); i++) {
+            		length1 += ((Chromosome) set2.get(i)).getTotalLength();
+            		counter++;
+            	}
+            	length2 /= counter;
+            	
                 return Double.compare(length1, length2);
             }
         });

@@ -328,10 +328,14 @@ public class ControladorPanelCariotipagem implements ActionListener {
 	private void activateBandMarking() {
 		isMarkingBands = true;
 		panelCariotipagem.getButtonMarcarBanda().setText("Finalizar Banda");
-		do {
-			color = JColorChooser.showDialog(null,"Selecione uma cor para a banda", Color.RED);
-		} while(color == null); 
-		panelCariotipagem.getPanelViewFotograma().setBandPreviewColor(color);
+		color = JColorChooser.showDialog(null,"Selecione uma cor para a banda", Color.RED);
+		if(color != null) {
+			panelCariotipagem.getPanelViewFotograma().setBandPreviewColor(color);			
+		} else {
+			isMarkingBands = false;
+			panelCariotipagem.getButtonMarcarBanda().setText("Marcar Banda");
+			JOptionPane.showMessageDialog(null, "Marcação de banda cancelada", "Banda cancelada", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	private void deactivateBandMarking() {

@@ -58,7 +58,7 @@ public class PanelInfo extends JPanel {
 	}
 	public JButton getButtonEnviar() {
 		if (buttonEnviar == null) {
-			buttonEnviar = new JButton("Enviar");
+			buttonEnviar = new JButton("Iniciar");
 			buttonEnviar.setFont(new Font("Montserrat", Font.PLAIN, 20));
 			buttonEnviar.setBounds(30, 235, 325, 42);
 		}
