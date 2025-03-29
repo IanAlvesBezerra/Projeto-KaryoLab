@@ -68,6 +68,9 @@ public class ControladorPanelCariotipagem implements ActionListener {
 		panelCariotipagem.getButtonAlternarNatureza().addActionListener(this);
 		panelCariotipagem.getButtonZoom().addActionListener(this);
 		panelCariotipagem.getButtonMarcarBanda().addActionListener(this);
+		panelCariotipagem.getButtonLinhasdeGrade().addActionListener(this);
+		panelCariotipagem.getButtonSalvarComo().addActionListener(this);
+		panelCariotipagem.getButtonFatorDeGrade().addActionListener(this);
 		
 		
 		panelCariotipagem.getListChromosomes().addListSelectionListener(e -> {
@@ -151,6 +154,12 @@ public class ControladorPanelCariotipagem implements ActionListener {
 	    	} else {
 	    		deactivateBandMarking();
 	    	}
+	    } else if(e.getSource() == panelCariotipagem.getButtonLinhasdeGrade()) {
+	    	alternateGridLines();
+	    } else if(e.getSource() == panelCariotipagem.getButtonSalvarComo()) {
+	    	saveAs();
+	    } else if(e.getSource() == panelCariotipagem.getButtonFatorDeGrade()) {
+	    	changeGridFactor();
 	    }
 
 		validateButtons();
@@ -217,6 +226,13 @@ public class ControladorPanelCariotipagem implements ActionListener {
     		}
 		} else {
             panelCariotipagem.getButtonMarcarBanda().setEnabled(false);
+		}
+		
+		//--- valida o botão do fator de grade
+		if(panelCariotipagem.getPanelViewFotograma().isShowingGridLines()) {
+			panelCariotipagem.getButtonFatorDeGrade().setVisible(true);
+		} else {
+			panelCariotipagem.getButtonFatorDeGrade().setVisible(false);
 		}
 	}
 	
@@ -545,7 +561,6 @@ public class ControladorPanelCariotipagem implements ActionListener {
 	// ------------------------------ PERSISTENCIA ---------------------------------------
 
 	private void saveChanges() {
-		
 		// só permite o salvamento se alguma marcação for feita
 		if(panelCariotipagem.getPanelViewFotograma().getArrayChromosomes().size() != 0) {
 			
@@ -566,10 +581,12 @@ public class ControladorPanelCariotipagem implements ActionListener {
 					JFileChooser fc = new JFileChooser();
 					fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 					fc.setDialogTitle("Escolha o local para o salvamento");
+					fc.setApproveButtonText("Salvar");
 					fc.showOpenDialog(panelCariotipagem);
 					File selectedFile = fc.getSelectedFile();
 					savePath = selectedFile.getPath();
 					savePath+="\\"+speciesName+".xml";
+					JOptionPane.showMessageDialog(null, "O arquivo foi salvo como "+speciesName+".xml", "Aviso", JOptionPane.INFORMATION_MESSAGE);
 				}
 					
 				Persistence.generateXML(panelCariotipagem.getPanelViewFotograma().getArrayChromosomes(), savePath, imagePath, ploidy);
@@ -577,11 +594,51 @@ public class ControladorPanelCariotipagem implements ActionListener {
 				
 			} catch (HeadlessException e) {
 		        JOptionPane.showMessageDialog(panelCariotipagem, "Erro!", "Erro!", JOptionPane.WARNING_MESSAGE);
-		    }
+		    } catch (NullPointerException e) {
+		    	JOptionPane.showMessageDialog(panelCariotipagem, "O arquivo não foi salvo!", "Cancelado!", JOptionPane.INFORMATION_MESSAGE);
+			}
 		} else {
 			JOptionPane.showMessageDialog(null, "Não é possível salvar sem nenhuma marcação feita", "Erro", JOptionPane.WARNING_MESSAGE);
 		}
-		
+	}
+	
+	private void saveAs() {
+		// só permite o salvamento se alguma marcação for feita
+		if(panelCariotipagem.getPanelViewFotograma().getArrayChromosomes().size() != 0) {
+			
+			// se o centriolo ou array de preview não estiver vazio
+			if(panelCariotipagem.getPanelViewFotograma().getCentrioloPreview() != null || !panelCariotipagem.getPanelViewFotograma().getArrayNodes(1).isEmpty()) {
+				JOptionPane.showMessageDialog(
+					null,
+					"Existe uma marcação em andamento."
+					+ "\nTermine ela para que não seja perdida",
+					"Terminar marcação do cromossomo",
+					JOptionPane.WARNING_MESSAGE
+				);
+			}
+			
+			try {
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.setDialogTitle("Escolha o local para o salvamento");
+				fc.setApproveButtonText("Salvar");
+				fc.showOpenDialog(panelCariotipagem);
+				File selectedFile = fc.getSelectedFile();
+				String tempSavePath = selectedFile.getPath();
+				tempSavePath+="\\"+speciesName+".xml";
+				JOptionPane.showMessageDialog(null, "O arquivo foi salvo como "+speciesName+".xml", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+					
+				Persistence.generateXML(panelCariotipagem.getPanelViewFotograma().getArrayChromosomes(), tempSavePath, imagePath, ploidy);
+				JOptionPane.showMessageDialog(null, "Alterações salvas com sucesso!", "Dados guardados", JOptionPane.INFORMATION_MESSAGE);
+				
+			} catch (HeadlessException e) {
+		        JOptionPane.showMessageDialog(panelCariotipagem, "Erro!", "Erro!", JOptionPane.WARNING_MESSAGE);
+		    } catch (NullPointerException e) {
+		    	JOptionPane.showMessageDialog(panelCariotipagem, "O arquivo não foi salvo!", "Cancelado!", JOptionPane.INFORMATION_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "Não é possível salvar sem nenhuma marcação feita", "Erro", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 	private void loadKaryotyping() {
@@ -651,6 +708,31 @@ public class ControladorPanelCariotipagem implements ActionListener {
 
         zoomDialog.setVisible(true);
         zoomDialog.start(); 
-
+	}
+	
+	private void alternateGridLines() {
+		if(panelCariotipagem.getPanelViewFotograma().isShowingGridLines()) {
+			panelCariotipagem.getPanelViewFotograma().setShowingGridLines(false);
+			panelCariotipagem.getButtonLinhasdeGrade().setText("Mostrar Grade");
+		} else {
+			panelCariotipagem.getPanelViewFotograma().setShowingGridLines(true);
+			panelCariotipagem.getButtonLinhasdeGrade().setText("Esconder Grade");
+		}
+	}
+	
+	private void changeGridFactor() {
+		if(panelCariotipagem.getPanelViewFotograma().getGridScale() == 48) {
+			panelCariotipagem.getPanelViewFotograma().setGridScale(24);
+			panelCariotipagem.getButtonFatorDeGrade().setText("2x");
+		} else if(panelCariotipagem.getPanelViewFotograma().getGridScale() == 24) {
+			panelCariotipagem.getPanelViewFotograma().setGridScale(12);
+			panelCariotipagem.getButtonFatorDeGrade().setText("4x");
+		} else if(panelCariotipagem.getPanelViewFotograma().getGridScale() == 12) {
+			panelCariotipagem.getPanelViewFotograma().setGridScale(6);
+			panelCariotipagem.getButtonFatorDeGrade().setText("8x");
+		} else {
+			panelCariotipagem.getPanelViewFotograma().setGridScale(48);
+			panelCariotipagem.getButtonFatorDeGrade().setText("1x");
+		}
 	}
 }

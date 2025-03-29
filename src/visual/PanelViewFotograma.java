@@ -1,5 +1,6 @@
 package visual;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,6 +29,8 @@ public class PanelViewFotograma extends JPanel {
     int radius = 5; // Raios dos círculos
     Chromosome selectedChromosome;
     private Color bandPreviewColor;
+    private boolean isShowingGridLines = false;
+	private int gridScale = 48;
     
     public PanelViewFotograma() {
         arrayNodesFirstArm = new ArrayList<Position>();
@@ -171,13 +174,25 @@ public class PanelViewFotograma extends JPanel {
             width = maxX - minX + 20;
             height = maxY - minY + 20;
 
-            g2d.drawRect(x, y, width, height); // Use drawRect de Graphics2D
+            g2d.drawRect(x, y, width, height);
             g2d.setStroke(new BasicStroke(1));
         }
+        
+        if(isShowingGridLines) {
+        	Graphics2D g2d = (Graphics2D) g;
+        	g2d.setColor(Color.GRAY);
+        	float opacity = 0.5f; // 50% transparente
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+
+        	
+        	for(int i = 6; i <= 630; i += gridScale) { //633 é o tamanho da imagem carregada
+        		g.drawLine(i, 3, i, 633);
+        		g.drawLine(3, i, 633, i);
+        	}
+        }
     }
-    
-    
-    private void drawNode(Graphics g, Position destiny, Color color) {
+
+	private void drawNode(Graphics g, Position destiny, Color color) {
     	g.setColor(color);
     	g.fillOval(destiny.getX() - radius, destiny.getY() - radius, radius * 2, radius * 2);
     }
@@ -317,5 +332,21 @@ public class PanelViewFotograma extends JPanel {
 	
 	public ArrayList<Position> getArrayBandPositions(){
 		return arrayBandPositions;
+	}
+	
+	public boolean isShowingGridLines() {
+		return isShowingGridLines;
+	}
+
+	public void setShowingGridLines(boolean isShowingGridLines) {
+		this.isShowingGridLines = isShowingGridLines;
+	}
+	
+	public int getGridScale() {
+		return gridScale;
+	}
+
+	public void setGridScale(int gridScale) {
+		this.gridScale = gridScale;
 	}
 }

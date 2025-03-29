@@ -13,6 +13,7 @@ import java.awt.Color;
 import javax.swing.JList;
 import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
+import javax.swing.JToggleButton;
 
 public class PanelCariotipagem extends JPanel {
 	private JButton buttonUploadFotograma;
@@ -32,6 +33,9 @@ public class PanelCariotipagem extends JPanel {
 	private JButton buttonAlternarNatureza;
 	private JButton buttonZoom;
 	private JButton buttonMarcarBanda;
+	private JButton buttonSalvarComo;
+	private JToggleButton buttonLinhasdeGrade;
+	private JButton buttonFatorDeGrade;
 	
 	
 	public PanelCariotipagem() {
@@ -50,6 +54,8 @@ public class PanelCariotipagem extends JPanel {
 		add(getButtonAlternarNatureza());
 		add(getButtonZoom());
 		add(getButtonMarcarBanda());
+		add(getButtonLinhasdeGrade());
+		add(getButtonFatorDeGrade());
 	}
 	
 	public JButton getButtonUploadFotograma() {
@@ -154,6 +160,7 @@ public class PanelCariotipagem extends JPanel {
 			toolBar.setBounds(0, 0, 1280, 25);
 			toolBar.add(getButtonNovaCariotipagem());
 			toolBar.add(getButtonSalvar());
+			toolBar.add(getButtonSalvarComo());
 			toolBar.add(getButtonCarregar());
 		}
 		return toolBar;
@@ -178,7 +185,7 @@ public class PanelCariotipagem extends JPanel {
 	}
 	public JButton getButtonAlternarNatureza() {
 		if (buttonAlternarNatureza == null) {
-			buttonAlternarNatureza = new JButton("<html>Definir<br>comoSexual</html>");
+			buttonAlternarNatureza = new JButton("<html>Definir<br>como Sexual</html>");
 			buttonAlternarNatureza.setIcon(new ImageIcon(PanelCariotipagem.class.getResource("/images/icons/alternar.png")));
 			buttonAlternarNatureza.setEnabled(false);
 			buttonAlternarNatureza.setVisible(false);
@@ -205,5 +212,27 @@ public class PanelCariotipagem extends JPanel {
 			buttonMarcarBanda.setBounds(1023, 546, 226, 50);
 		}
 		return buttonMarcarBanda;
+	}
+	public JButton getButtonSalvarComo() {
+		if (buttonSalvarComo == null) {
+			buttonSalvarComo = new JButton("Salvar como");
+		}
+		return buttonSalvarComo;
+	}
+	public JToggleButton getButtonLinhasdeGrade() {
+		if (buttonLinhasdeGrade == null) {
+			buttonLinhasdeGrade = new JToggleButton("Mostrar Grade");
+			buttonLinhasdeGrade.setFont(new Font("Montserrat", Font.PLAIN, 20));
+			buttonLinhasdeGrade.setBounds(32, 568, 196, 40);
+		}
+		return buttonLinhasdeGrade;
+	}
+	public JButton getButtonFatorDeGrade() {
+		if (buttonFatorDeGrade == null) {
+			buttonFatorDeGrade = new JButton("1x");
+			buttonFatorDeGrade.setFont(new Font("Montserrat", Font.PLAIN, 20));
+			buttonFatorDeGrade.setBounds(238, 568, 59, 40);
+		}
+		return buttonFatorDeGrade;
 	}
 }
